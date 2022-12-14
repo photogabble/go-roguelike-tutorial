@@ -5,7 +5,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-func EventHandler() interface{} {
+func EventHandler() Action {
 	if inpututil.IsKeyJustPressed(ebiten.KeyW) {
 		return NewMovementAction(0, -1)
 	}
