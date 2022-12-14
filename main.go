@@ -4,6 +4,7 @@ import (
 	"github.com/BigJk/ramen/console"
 	"github.com/BigJk/ramen/font"
 	"github.com/hajimehoshi/ebiten/v2"
+	"os"
 )
 
 const (
@@ -17,16 +18,31 @@ func main() {
 		panic(err)
 	}
 
+	player := NewPlayer()
+
 	// Update loop, executed 60 times a second, unaffected by FPS
 	rootConsole.SetTickHook(func(timeElapsed float64) error {
-		// your game logic
+		action := EventHandler()
+
+		if action != nil {
+			switch action.(type) {
+			case MovementAction:
+				movement := action.(MovementAction)
+				player.X += movement.dx
+				player.Y += movement.dy
+				break
+			case EscapeAction:
+				os.Exit(0)
+			}
+		}
+
 		return nil
 	})
 
 	// Draw loop, executed before each frame is drawn to the screen
 	rootConsole.SetPreRenderHook(func(screen *ebiten.Image, timeDelta float64) error {
 		rootConsole.ClearAll() // Clear console
-		rootConsole.Print(1, 1, "@")
+		rootConsole.Print(player.X, player.Y, "@")
 		return nil
 	})
 
