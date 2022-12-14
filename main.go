@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/BigJk/ramen/concolor"
 	"github.com/BigJk/ramen/console"
 	"github.com/BigJk/ramen/font"
 	"github.com/hajimehoshi/ebiten/v2"
-	"os"
 )
 
 const (
@@ -13,27 +13,24 @@ const (
 )
 
 func main() {
+	InitTileAtlas()
+
 	rootConsole, err := console.New(ScreenW, ScreenH, font.DefaultFont, "Yet Another Roguelike Tutorial")
 	if err != nil {
 		panic(err)
 	}
 
-	player := NewPlayer()
+	engine := NewEngine(
+		NewEntity(ScreenW/2, ScreenH/2, '@', concolor.RGB(255, 69, 0)),
+		NewGameMap(80, 45),
+	)
 
 	// Update loop, executed 60 times a second, unaffected by FPS
 	rootConsole.SetTickHook(func(timeElapsed float64) error {
 		action := EventHandler()
 
 		if action != nil {
-			switch action.(type) {
-			case MovementAction:
-				movement := action.(MovementAction)
-				player.X += movement.dx
-				player.Y += movement.dy
-				break
-			case EscapeAction:
-				os.Exit(0)
-			}
+			action.Perform(engine, engine.player)
 		}
 
 		return nil
@@ -42,7 +39,7 @@ func main() {
 	// Draw loop, executed before each frame is drawn to the screen
 	rootConsole.SetPreRenderHook(func(screen *ebiten.Image, timeDelta float64) error {
 		rootConsole.ClearAll() // Clear console
-		rootConsole.Print(player.X, player.Y, "@")
+		engine.Render(rootConsole)
 		return nil
 	})
 
