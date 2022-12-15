@@ -5,6 +5,7 @@ import (
 	"github.com/BigJk/ramen/console"
 )
 
+// Engine acts as a store of game data that can easily be passed to functions that need it
 type Engine struct {
 	entities *EntityList
 	player   *Entity
