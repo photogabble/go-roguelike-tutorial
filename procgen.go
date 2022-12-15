@@ -4,6 +4,7 @@ import (
 	"math/rand"
 )
 
+// RectangularRoom contains data relating to a rectangular room
 type RectangularRoom struct {
 	X1 int
 	X2 int
@@ -39,6 +40,7 @@ func (room *RectangularRoom) Intersects(other RectangularRoom) bool {
 	return room.X1 <= other.X2 && room.X2 >= other.X1 && room.Y1 <= other.Y2 && room.Y2 >= other.Y1
 }
 
+// NewRectangularRoom returns a RectangularRoom pointer
 func NewRectangularRoom(x, y, width, height int) *RectangularRoom {
 	return &RectangularRoom{
 		X1: x,
@@ -48,14 +50,17 @@ func NewRectangularRoom(x, y, width, height int) *RectangularRoom {
 	}
 }
 
+// RectangularRoomList is a helper struct for running Intersects on a list of RectangularRoom
 type RectangularRoomList struct {
 	Rooms []*RectangularRoom
 }
 
+// Add adds a RectangularRoom to the list
 func (list *RectangularRoomList) Add(room *RectangularRoom) {
 	list.Rooms = append(list.Rooms, room)
 }
 
+// Intersects loops over the list of RectangularRoom and returns true if any intersect with the input room.
 func (list *RectangularRoomList) Intersects(room *RectangularRoom) bool {
 	for _, other := range list.Rooms {
 		if other.Intersects(*room) {
@@ -66,6 +71,7 @@ func (list *RectangularRoomList) Intersects(room *RectangularRoom) bool {
 	return false
 }
 
+// Last retuns the last RectangularRoom to be added to the list or nil
 func (list *RectangularRoomList) Last() *RectangularRoom {
 	return list.Rooms[len(list.Rooms)-1]
 }
@@ -91,6 +97,7 @@ func TunnelBetween(a, b RectangularRoom) []Vector2i {
 	return append(BresenhamLine(Vector2i{cX, cY}, Vector2i{x2, y2}), BresenhamLine(Vector2i{x1, y1}, Vector2i{cX, cY})...)
 }
 
+// GenerateDungeon returns a fresh GameMap containing a generated dungeon made up of rectangular rooms joined by passageways.
 func GenerateDungeon(width, height, maxRooms, minRoomSize, maxRoomSize int, player *Entity) *GameMap {
 	dungeon := NewGameMap(width, height)
 

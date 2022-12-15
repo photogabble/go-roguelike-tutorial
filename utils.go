@@ -6,6 +6,7 @@ type Vector2i struct {
 	X, Y int
 }
 
+// abs returns the absolute int value
 func abs(x int) int {
 	switch {
 	case x < 0:
@@ -16,6 +17,7 @@ func abs(x int) int {
 	return x
 }
 
+// rng returns a random number in a given range
 func rng(min, max int) int {
 	return rand.Intn(max-min+1) + min
 }

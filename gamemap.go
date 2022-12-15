@@ -25,10 +25,12 @@ func (m *GameMap) Render(con *console.Console) {
 	}
 }
 
+// GetTile returns the Tile found at a given position
 func (m *GameMap) GetTile(x, y int) *Tile {
 	return m.tiles[y*m.width+x]
 }
 
+// SetArea sets Tile in the GameMap for a given area
 func (m *GameMap) SetArea(area []Vector2i, tile *Tile) {
 	for _, loc := range area {
 		m.tiles[loc.Y*m.width+loc.X] = tile
