@@ -31,9 +31,12 @@ func (list *EntityList) Add(entity *Entity) {
 }
 
 // Render loops through all Entity in the EntityList and draws them to the console
-func (list *EntityList) Render(con *console.Console) {
+func (list *EntityList) Render(dungeon *GameMap, con *console.Console) {
 	for _, entity := range list.Entities {
-		con.Transform(entity.X, entity.Y, t.Foreground(entity.Color), t.Char(entity.Char))
+		if dungeon.fov.IsVisible(entity.X, entity.Y) {
+			// Only print entities that are in the FOV
+			con.Transform(entity.X, entity.Y, t.Foreground(entity.Color), t.Char(entity.Char))
+		}
 	}
 }
 

@@ -14,7 +14,7 @@ type Engine struct {
 
 func (e *Engine) Render(con *console.Console) {
 	e.gameMap.Render(con)
-	e.entities.Render(con)
+	e.entities.Render(e.gameMap, con)
 }
 
 func NewEngine(player *Entity, gameMap *GameMap) *Engine {
@@ -26,6 +26,9 @@ func NewEngine(player *Entity, gameMap *GameMap) *Engine {
 
 	engine.entities.Add(player)
 	engine.entities.Add(NewEntity((ScreenW/2)-5, ScreenH/2, '@', concolor.RGB(255, 255, 0)))
+
+	// Init FOV
+	gameMap.UpdateFov(player)
 
 	return engine
 }

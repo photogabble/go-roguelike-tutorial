@@ -33,6 +33,7 @@ func main() {
 
 		if action != nil {
 			action.Perform(engine, engine.player)
+			engine.gameMap.UpdateFov(engine.player)
 		}
 
 		return nil
