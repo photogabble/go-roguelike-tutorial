@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/BigJk/ramen/console"
 	"github.com/BigJk/ramen/t"
 )
@@ -18,7 +17,6 @@ func (m *GameMap) InBounds(x, y int) bool {
 }
 
 func (m *GameMap) Render(con *console.Console) {
-
 	for x := 0; x < m.width; x++ {
 		for y := 0; y < m.height; y++ {
 			tile := m.GetTile(x, y)
@@ -31,6 +29,12 @@ func (m *GameMap) GetTile(x, y int) *Tile {
 	return m.tiles[y*m.width+x]
 }
 
+func (m *GameMap) SetArea(area []Vector2i, tile *Tile) {
+	for _, loc := range area {
+		m.tiles[loc.Y*m.width+loc.X] = tile
+	}
+}
+
 func NewGameMap(width, height int) *GameMap {
 	m := &GameMap{
 		width:  width,
@@ -38,13 +42,9 @@ func NewGameMap(width, height int) *GameMap {
 		tiles:  make([]*Tile, width*height),
 	}
 
-	fmt.Println(width*height, len(m.tiles))
-
 	for i := range m.tiles {
-		m.tiles[i] = TileAtlas["Floor"]
+		m.tiles[i] = TileAtlas["Wall"]
 	}
-
-	m.tiles[100] = TileAtlas["Wall"]
 
 	return m
 }
