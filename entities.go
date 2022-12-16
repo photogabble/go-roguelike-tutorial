@@ -8,10 +8,12 @@ import (
 
 // Entity is a generic struct to represent players, enemies, items,etc.
 type Entity struct {
-	X     int
-	Y     int
-	Char  int
-	Color concolor.Color
+	X              int
+	Y              int
+	Char           int
+	Color          concolor.Color
+	name           string
+	blocksMovement bool
 }
 
 // Move the entity by a given amount.
@@ -63,11 +65,17 @@ func (list *EntityList) AtLocation(x, y int) *Entity {
 }
 
 // NewEntity spawns a new Entity pointer
-func NewEntity(x, y int, char rune, color concolor.Color) *Entity {
+func NewEntity(char rune, color concolor.Color, name string, blocksMovement bool) *Entity {
 	return &Entity{
-		X:     x,
-		Y:     y,
-		Char:  int(char),
-		Color: color,
+		Char:           int(char),
+		Color:          color,
+		name:           name,
+		blocksMovement: blocksMovement,
 	}
 }
+
+// Definitions for various Entities to be spawned into the GameMap
+
+var Player = NewEntity('@', concolor.RGB(255, 255, 255), "Player", true)
+var Orc = NewEntity('o', concolor.RGB(63, 127, 63), "Orc", true)
+var Troll = NewEntity('T', concolor.RGB(0, 127, 0), "Troll", true)
