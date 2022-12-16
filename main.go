@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/BigJk/ramen/concolor"
 	"github.com/BigJk/ramen/console"
 	"github.com/BigJk/ramen/font"
 	"github.com/hajimehoshi/ebiten/v2"
