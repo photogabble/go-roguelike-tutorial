@@ -29,13 +29,7 @@ func main() {
 
 	// Update loop, executed 60 times a second, unaffected by FPS
 	rootConsole.SetTickHook(func(timeElapsed float64) error {
-		action := EventHandler()
-
-		if action != nil {
-			action.Perform(engine, engine.player)
-			engine.gameMap.UpdateFov(engine.player)
-		}
-
+		engine.HandlePlayerTurn(EventHandler())
 		return nil
 	})
 
