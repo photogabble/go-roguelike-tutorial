@@ -40,6 +40,17 @@ func (list *EntityList) Render(dungeon *GameMap, con *console.Console) {
 	}
 }
 
+// AtLocation returns the first Entity found at location.
+func (list *EntityList) AtLocation(x, y int) *Entity {
+	for _, entity := range list.Entities {
+		if entity.X == x && entity.Y == y {
+			return entity
+		}
+	}
+
+	return nil
+}
+
 // NewEntity spawns a new Entity pointer
 func NewEntity(x, y int, char rune, color concolor.Color) *Entity {
 	return &Entity{
