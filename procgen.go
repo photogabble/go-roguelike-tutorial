@@ -99,8 +99,10 @@ func TunnelBetween(a, b RectangularRoom) []Vector2i {
 
 // GenerateDungeon returns a fresh GameMap containing a generated dungeon made up of rectangular rooms joined by passageways.
 func GenerateDungeon(width, height, maxRooms, minRoomSize, maxRoomSize int, player *Entity) *GameMap {
-	dungeon := NewGameMap(width, height)
+	entities := &EntityList{}
+	entities.Add(player)
 
+	dungeon := NewGameMap(width, height, entities)
 	rooms := &RectangularRoomList{}
 
 	for r := 0; r < maxRooms; r++ {

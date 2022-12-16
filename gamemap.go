@@ -12,6 +12,7 @@ type GameMap struct {
 	tiles    []*Tile
 	explored []bool // Tile positions that have been explored
 	fov      *fov.View
+	entities *EntityList
 }
 
 // InBounds returns true if x and y are inside the bounds of this map
@@ -58,6 +59,8 @@ func (m *GameMap) Render(con *console.Console) {
 			con.Transform(x, y, t.Foreground(tGraphic.FgColor), t.Background(tGraphic.BgColor), t.Char(tGraphic.Char))
 		}
 	}
+
+	m.entities.Render(m, con)
 }
 
 // GetTile returns the Tile found at a given position
@@ -72,13 +75,14 @@ func (m *GameMap) SetArea(area []Vector2i, tile *Tile) {
 	}
 }
 
-func NewGameMap(width, height int) *GameMap {
+func NewGameMap(width, height int, entities *EntityList) *GameMap {
 	m := &GameMap{
 		width:    width,
 		height:   height,
 		tiles:    make([]*Tile, width*height),
 		explored: make([]bool, width*height),
 		fov:      fov.New(),
+		entities: entities,
 	}
 
 	for i := range m.tiles {
