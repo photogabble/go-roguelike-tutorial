@@ -20,6 +20,17 @@ func (entity *Entity) Move(dx, dy int) {
 	entity.Y += dy
 }
 
+// Spawn makes a copy of Entity and adds it to the GameMap's EntityList if not nil.
+func (entity *Entity) Spawn(x, y int, dungeon *GameMap) *Entity {
+	spawn := *entity
+	spawn.X = x
+	spawn.Y = y
+	if dungeon != nil {
+		dungeon.entities.Add(&spawn)
+	}
+	return &spawn
+}
+
 // EntityList is a collection of Entity and provides helper methods
 type EntityList struct {
 	Entities []*Entity
