@@ -98,7 +98,10 @@ func TunnelBetween(a, b RectangularRoom) []Vector2i {
 }
 
 // GenerateDungeon returns a fresh GameMap containing a generated dungeon made up of rectangular rooms joined by passageways.
-func GenerateDungeon(width, height, maxRooms, minRoomSize, maxRoomSize int, player *Entity) *GameMap {
+func GenerateDungeon(
+	width, height, maxRooms, minRoomSize, maxRoomSize, maxMonstersPerRoom int,
+	player *Entity,
+) *GameMap {
 	entities := &EntityList{}
 	entities.Add(player)
 
@@ -130,9 +133,30 @@ func GenerateDungeon(width, height, maxRooms, minRoomSize, maxRoomSize int, play
 			dungeon.SetArea(TunnelBetween(*rooms.Last(), *newRoom), TileAtlas["Floor"])
 		}
 
+		PlaceEntities(newRoom, dungeon, maxMonstersPerRoom)
+
 		// Append new room to list
 		rooms.Add(newRoom)
 	}
 
 	return dungeon
+}
+
+// PlaceEntities places entities at random locations in a given room RectangularRoom
+func PlaceEntities(room *RectangularRoom, dungeon *GameMap, max int) {
+	monsterN := rng(0, max)
+
+	for i := 0; i < monsterN; i++ {
+		x := rng(room.X1+1, room.X2-1)
+		y := rng(room.Y1+1, room.Y2-1)
+
+		// Check no entity currently exists at location
+		if dungeon.entities.AtLocation(x, y) == nil {
+			if rng(0, 100) < 80 {
+				Orc.Spawn(x, y, dungeon)
+			} else {
+				Troll.Spawn(x, y, dungeon)
+			}
+		}
+	}
 }

@@ -20,11 +20,11 @@ func main() {
 		panic(err)
 	}
 
-	player := NewEntity(ScreenW/2, ScreenH/2, '@', concolor.RGB(255, 69, 0))
+	player := Player.Spawn(ScreenW/2, ScreenH/2, nil)
 
 	engine := NewEngine(
 		player,
-		GenerateDungeon(80, 45, 30, 6, 30, player),
+		GenerateDungeon(80, 45, 30, 6, 30, 2, player),
 	)
 
 	// Update loop, executed 60 times a second, unaffected by FPS
