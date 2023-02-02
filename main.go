@@ -19,12 +19,7 @@ func main() {
 		panic(err)
 	}
 
-	player := Player.Spawn(ScreenW/2, ScreenH/2, nil)
-
-	engine := NewEngine(
-		player,
-		GenerateDungeon(80, 45, 30, 6, 30, 2, player),
-	)
+	engine := NewEngine()
 
 	// Update loop, executed 60 times a second, unaffected by FPS
 	rootConsole.SetTickHook(func(timeElapsed float64) error {

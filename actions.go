@@ -5,8 +5,16 @@ import (
 	"os"
 )
 
-type Action interface {
+type IAction interface {
 	Perform(engine *Engine, entity *Entity)
+}
+
+type Action struct {
+	Entity *Entity
+}
+
+func (action *Action) Perform(engine *Engine, entity *Entity) {
+	// "Abstract" function to be implemented by sub-actions
 }
 
 type EscapeAction struct {

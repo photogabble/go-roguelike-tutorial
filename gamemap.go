@@ -13,6 +13,7 @@ type GameMap struct {
 	explored []bool // Tile positions that have been explored
 	fov      *fov.View
 	entities *EntityList
+	engine   *Engine
 }
 
 // InBounds returns true if x and y are inside the bounds of this map
@@ -36,8 +37,8 @@ func (m *GameMap) SetExplored(x, y int) {
 }
 
 // UpdateFov recomputes the visible are based upon the players point of view.
-func (m *GameMap) UpdateFov(player *Entity) {
-	m.fov.Compute(m, player.X, player.Y, 6)
+func (m *GameMap) UpdateFov() {
+	m.fov.Compute(m, m.engine.player.X, m.engine.player.Y, 6)
 }
 
 func (m *GameMap) Render(con *console.Console) {
@@ -75,7 +76,7 @@ func (m *GameMap) SetArea(area []Vector2i, tile *Tile) {
 	}
 }
 
-func NewGameMap(width, height int, entities *EntityList) *GameMap {
+func NewGameMap(width, height int, entities *EntityList, engine *Engine) *GameMap {
 	m := &GameMap{
 		width:    width,
 		height:   height,
@@ -83,6 +84,7 @@ func NewGameMap(width, height int, entities *EntityList) *GameMap {
 		explored: make([]bool, width*height),
 		fov:      fov.New(),
 		entities: entities,
+		engine:   engine,
 	}
 
 	for i := range m.tiles {

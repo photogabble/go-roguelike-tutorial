@@ -27,25 +27,26 @@ func (e *Engine) HandleEnemyTurns() {
 }
 
 // HandlePlayerTurn performs players action
-func (e *Engine) HandlePlayerTurn(action Action) {
+func (e *Engine) HandlePlayerTurn(action IAction) {
 	if action == nil {
 		return
 	}
 
 	action.Perform(e, e.player)
 
-	e.gameMap.UpdateFov(e.player)
+	e.gameMap.UpdateFov()
 	e.HandleEnemyTurns()
 }
 
-func NewEngine(player *Entity, gameMap *GameMap) *Engine {
+func NewEngine() *Engine {
 	engine := &Engine{
-		gameMap: gameMap,
-		player:  player,
+		player: Player.Spawn(ScreenW/2, ScreenH/2, nil),
 	}
 
+	GenerateDungeon(80, 45, 30, 6, 30, 2, engine)
+
 	// Init FOV
-	gameMap.UpdateFov(player)
+	engine.gameMap.UpdateFov()
 
 	return engine
 }

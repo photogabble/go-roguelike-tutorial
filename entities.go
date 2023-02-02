@@ -8,6 +8,7 @@ import (
 
 // Entity is a generic struct to represent players, enemies, items,etc.
 type Entity struct {
+	dungeon        *GameMap
 	X              int
 	Y              int
 	Char           int
@@ -28,9 +29,23 @@ func (entity *Entity) Spawn(x, y int, dungeon *GameMap) *Entity {
 	spawn.X = x
 	spawn.Y = y
 	if dungeon != nil {
+		spawn.dungeon = dungeon
 		dungeon.entities.Add(&spawn)
 	}
 	return &spawn
+}
+
+// Place moves the Entity to a new location, handles moving across GameMap's
+func (entity *Entity) Place(x, y int, dungeon *GameMap) {
+	entity.X = x
+	entity.Y = y
+	if dungeon != nil {
+		if entity.dungeon != nil {
+			entity.dungeon.entities.Remove(entity)
+		}
+		entity.dungeon = dungeon
+		dungeon.entities.Add(entity)
+	}
 }
 
 // EntityList is a collection of Entity and provides helper methods
@@ -41,6 +56,10 @@ type EntityList struct {
 // Add adds a new Entity to EntityList
 func (list *EntityList) Add(entity *Entity) {
 	list.Entities = append(list.Entities, entity)
+}
+
+func (list *EntityList) Remove(entity *Entity) {
+	// TODO ...
 }
 
 // Render loops through all Entity in the EntityList and draws them to the console
@@ -64,7 +83,7 @@ func (list *EntityList) AtLocation(x, y int) *Entity {
 	return nil
 }
 
-// NewEntity spawns a new Entity pointer
+// NewEntity returns a new Entity pointer
 func NewEntity(char rune, color concolor.Color, name string, blocksMovement bool) *Entity {
 	return &Entity{
 		Char:           int(char),

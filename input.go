@@ -5,8 +5,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-// EventHandler listens for ebiten input events and translates them to Action's.
-func EventHandler() Action {
+// EventHandler listens for ebiten input events and translates them to IAction's.
+func EventHandler() IAction {
 	if inpututil.IsKeyJustPressed(ebiten.KeyW) {
 		return NewBumpAction(0, -1)
 	}

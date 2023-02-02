@@ -100,12 +100,12 @@ func TunnelBetween(a, b RectangularRoom) []Vector2i {
 // GenerateDungeon returns a fresh GameMap containing a generated dungeon made up of rectangular rooms joined by passageways.
 func GenerateDungeon(
 	width, height, maxRooms, minRoomSize, maxRoomSize, maxMonstersPerRoom int,
-	player *Entity,
+	engine *Engine,
 ) *GameMap {
 	entities := &EntityList{}
-	entities.Add(player)
+	entities.Add(engine.player)
 
-	dungeon := NewGameMap(width, height, entities)
+	dungeon := NewGameMap(width, height, entities, engine)
 	rooms := &RectangularRoomList{}
 
 	for r := 0; r < maxRooms; r++ {
@@ -127,7 +127,8 @@ func GenerateDungeon(
 
 		// If this is the first room, then place the player Entity in its center
 		if len(rooms.Rooms) == 0 {
-			player.X, player.Y = newRoom.Center()
+			cX, cY := newRoom.Center()
+			engine.player.Place(cX, cY, dungeon)
 		} else {
 			// Dig out a tunnel between this room and the previous room
 			dungeon.SetArea(TunnelBetween(*rooms.Last(), *newRoom), TileAtlas["Floor"])
