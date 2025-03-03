@@ -43,7 +43,7 @@ func NewEngine() *Engine {
 		player: Player.Spawn(ScreenW/2, ScreenH/2, nil),
 	}
 
-	GenerateDungeon(80, 45, 30, 6, 30, 2, engine)
+	engine.gameMap = GenerateDungeon(80, 45, 30, 6, 30, 2, engine)
 
 	// Init FOV
 	engine.gameMap.UpdateFov()
