@@ -32,8 +32,7 @@ func (e *Engine) HandlePlayerTurn(action IAction) {
 		return
 	}
 
-	action.Perform(e, e.player)
-
+	action.Perform()
 	e.gameMap.UpdateFov()
 	e.HandleEnemyTurns()
 }

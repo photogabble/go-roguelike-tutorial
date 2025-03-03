@@ -6,64 +6,82 @@ import (
 )
 
 type IAction interface {
-	Perform(engine *Engine, entity *Entity)
+	Perform()
 }
 
+// Action is the base struct, intended to be extended by structs that implement the Perform function of IAction
 type Action struct {
-	Entity *Entity
+	entity *Entity
 }
 
-func (action *Action) Perform(engine *Engine, entity *Entity) {
+// engine is a shortcut to Engine
+func (action *Action) engine() *Engine {
+	return action.entity.dungeon.engine
+}
+
+func (action *Action) Perform() {
 	// "Abstract" function to be implemented by sub-actions
 }
 
 type EscapeAction struct {
 }
 
-func (esc *EscapeAction) Perform(engine *Engine, entity *Entity) {
+func (esc *EscapeAction) Perform() {
 	os.Exit(0)
 }
 
 // ActionWithDirection is a base struct for Actions with destination
 type ActionWithDirection struct {
+	Action
 	dx int
 	dy int
+}
+
+func (action *ActionWithDirection) DestinationXY() (int, int) {
+	return action.entity.X + action.dx, action.entity.Y + action.dy
+}
+
+// BlockingEntity returns the blocking Entity at this Actions destination
+func (action *ActionWithDirection) BlockingEntity() *Entity {
+	dX, dY := action.DestinationXY()
+	entityAtDestination := action.engine().gameMap.entities.AtLocation(dX, dY)
+
+	if entityAtDestination != nil && entityAtDestination.blocksMovement == true {
+		return entityAtDestination
+	}
+
+	return nil
 }
 
 type MovementAction struct {
 	ActionWithDirection
 }
 
-func (move *MovementAction) Perform(engine *Engine, entity *Entity) {
-	dX := entity.X + move.dx
-	dY := entity.Y + move.dy
+func (move *MovementAction) Perform() {
+	dX, dY := move.DestinationXY()
 
-	if !engine.gameMap.InBounds(dX, dY) {
+	if !move.engine().gameMap.InBounds(dX, dY) {
 		return // Destination out of bounds
 	}
 
-	if !engine.gameMap.GetTile(dX, dY).Walkable {
+	if !move.engine().gameMap.GetTile(dX, dY).Walkable {
 		return // Destination is blocked by a tile
 	}
 
-	entityAtDestination := engine.gameMap.entities.AtLocation(dX, dY)
-
-	if entityAtDestination != nil && entityAtDestination.blocksMovement == true {
+	if move.BlockingEntity() != nil {
 		return // Destination blocked by Entity
 	}
 
-	entity.Move(move.dx, move.dy)
+	move.entity.Move(move.dx, move.dy)
 }
 
 type MeleeAction struct {
 	ActionWithDirection
 }
 
-func (action *MeleeAction) Perform(engine *Engine, entity *Entity) {
-	dX := entity.X + action.dx
-	dY := entity.Y + action.dy
-
-	target := engine.gameMap.entities.AtLocation(dX, dY)
+// Perform this MeleeAction on Entity
+func (action *MeleeAction) Perform() {
+	target := action.BlockingEntity()
 
 	if target != nil {
 		fmt.Println(fmt.Sprintf("You kick the %s, much to its annoyance!", target.name))
@@ -74,42 +92,42 @@ type BumpAction struct {
 	ActionWithDirection
 }
 
-func (action *BumpAction) Perform(engine *Engine, entity *Entity) {
-	dX := entity.X + action.dx
-	dY := entity.Y + action.dy
-
-	target := engine.gameMap.entities.AtLocation(dX, dY)
+func (action *BumpAction) Perform() {
+	target := action.BlockingEntity()
 
 	if target == nil {
-		NewMovementAction(action.dx, action.dy).Perform(engine, entity)
+		NewMovementAction(action.entity, action.dx, action.dy).Perform()
 	} else {
-		NewMeleeAction(action.dx, action.dy).Perform(engine, entity)
+		NewMeleeAction(action.entity, action.dx, action.dy).Perform()
 	}
 }
 
-func NewMeleeAction(dx, dy int) *MeleeAction {
+func NewMeleeAction(entity *Entity, dx, dy int) *MeleeAction {
 	return &MeleeAction{
 		ActionWithDirection{
-			dx: dx,
-			dy: dy,
+			Action: Action{entity},
+			dx:     dx,
+			dy:     dy,
 		},
 	}
 }
 
-func NewMovementAction(dx, dy int) *MovementAction {
+func NewMovementAction(entity *Entity, dx, dy int) *MovementAction {
 	return &MovementAction{
 		ActionWithDirection{
-			dx: dx,
-			dy: dy,
+			Action: Action{entity},
+			dx:     dx,
+			dy:     dy,
 		},
 	}
 }
 
-func NewBumpAction(dx, dy int) *BumpAction {
+func NewBumpAction(entity *Entity, dx, dy int) *BumpAction {
 	return &BumpAction{
 		ActionWithDirection{
-			dx: dx,
-			dy: dy,
+			Action: Action{entity},
+			dx:     dx,
+			dy:     dy,
 		},
 	}
 }

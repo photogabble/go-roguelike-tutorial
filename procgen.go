@@ -71,7 +71,7 @@ func (list *RectangularRoomList) Intersects(room *RectangularRoom) bool {
 	return false
 }
 
-// Last retuns the last RectangularRoom to be added to the list or nil
+// Last returns the last RectangularRoom to be added to the list or nil
 func (list *RectangularRoomList) Last() *RectangularRoom {
 	return list.Rooms[len(list.Rooms)-1]
 }

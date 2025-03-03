@@ -35,7 +35,7 @@ func (entity *Entity) Spawn(x, y int, dungeon *GameMap) *Entity {
 	return &spawn
 }
 
-// Place moves the Entity to a new location, handles moving across GameMap's
+// Place moves the Entity to a new location, handles moving across GameMap's, e.g. moving Player between levels
 func (entity *Entity) Place(x, y int, dungeon *GameMap) {
 	entity.X = x
 	entity.Y = y
@@ -59,7 +59,7 @@ func (list *EntityList) Add(entity *Entity) {
 }
 
 func (list *EntityList) Remove(entity *Entity) {
-	// TODO ...
+	// TODO remove entity from list.Entities
 }
 
 // Render loops through all Entity in the EntityList and draws them to the console

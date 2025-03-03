@@ -23,7 +23,7 @@ func main() {
 
 	// Update loop, executed 60 times a second, unaffected by FPS
 	rootConsole.SetTickHook(func(timeElapsed float64) error {
-		engine.HandlePlayerTurn(EventHandler())
+		engine.HandlePlayerTurn(EventHandler(engine.player))
 		return nil
 	})
 
